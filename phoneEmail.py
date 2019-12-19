@@ -6,8 +6,7 @@ import pyperclip
 import re
 
 # Создаем шаблон для 2-х разных видов номеров.
-phoneRegex = re.compile(r'''[+7]\d{10} | \d{11}''')
-
+phoneRegex = re.compile(r'\d{3}.*?\d{3}.*?\d{2}.*?\d{2}')
 
 emailRegex = re.compile(r'''(
     [a-zA-Z0-9._%+-]+       # имя пользователя
@@ -28,14 +27,17 @@ for group in emailRegex.findall(text):
     emails.append(group[0])
 
 # Копирование результатов в буфер обмена.
+
+if len(emails) == 0:
+    print("\n Email не найдены...")
+if len(phones) == 0:
+    print("\n Mobile phone numbers не найдены...")
+
+phones.extend(emails)
+
 if len(phones) > 0:
     pyperclip.copy('\n'.join(phones))
-    print("Скопированно в буфер обмена:")
+    print("\nСкопированно в буфер обмена:")
     print('\n'.join(phones))
-if len(emails) > 0:
-    pyperclip.copy('\n'.join(emails))
-    print("\nСкопированно Email в буфер обмена:")
-    print('\n'.join(emails))
-
 else:
     print('Телефонные номера и адреса электронной почты не обнаружены...')
