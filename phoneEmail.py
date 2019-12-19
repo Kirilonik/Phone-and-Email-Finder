@@ -5,13 +5,9 @@
 import pyperclip
 import re
 
-# phoneRegex = re.compile(r'''(
-# (\d{3}|\(\d{3}\))?   # территориальный код
-# (\s|-|\.)?           # разделитель
-# (\d{3})              # первые 3 цифры
-# (\s|-|\.)            # разделитель
-# (\d{4})              # последние 4 цифры
-# )''', re.VERBOSE)
+# Создаем шаблон для 2-х разных видов номеров.
+phoneRegex = re.compile(r'''[+7]\d{10} | \d{11}''')
+
 
 emailRegex = re.compile(r'''(
     [a-zA-Z0-9._%+-]+       # имя пользователя
@@ -20,19 +16,26 @@ emailRegex = re.compile(r'''(
     (\.[a-zA-Z]{2,4})       # Остальная часть адреса
 )''', re.VERBOSE)
 
+
 text = str(pyperclip.paste())
-matches = []
-# for group in phoneRegex.findall(text):
-#    phoneNum = '-'.join([group[1], group[3], group[5]])
-#    matches.append(phoneNum)
+
+phones = []
+emails = []
+for group in phoneRegex.findall(text):
+    phones.append(group)
 
 for group in emailRegex.findall(text):
-    matches.append(group[0])
+    emails.append(group[0])
 
 # Копирование результатов в буфер обмена.
-if len(matches) > 0:
-    pyperclip.copy('\n'.join(matches))
+if len(phones) > 0:
+    pyperclip.copy('\n'.join(phones))
     print("Скопированно в буфер обмена:")
-    print('\n'.join(matches))
+    print('\n'.join(phones))
+if len(emails) > 0:
+    pyperclip.copy('\n'.join(emails))
+    print("\nСкопированно Email в буфер обмена:")
+    print('\n'.join(emails))
+
 else:
     print('Телефонные номера и адреса электронной почты не обнаружены...')
